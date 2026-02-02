@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2 class="text-2xl font-semibold mb-6">
+  {% if user.role == 'End User' %}
+    My Complaints
+  {% elif user.role == 'Department Admin' %}
+    {{ user.department }} Department Complaints
+  {% else %}
+    All Complaints
+  {% endif %}
+</h2>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="mb-4 p-3 rounded {% if category == 'error' %}bg-red-100 text-red-700{% else %}bg-green-100 text-green-700{% endif %}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+<div class="bg-white shadow rounded p-6">
+  {% if complaints %}
+    <div class="overflow-x-auto">
+      <table class="w-full">
+        <thead>
+          <tr class="border-b">
+            <th class="text-left py-3 px-4">ID</th>
+            <th class="text-left py-3 px-4">Title</th>
+            <th class="text-left py-3 px-4">Department</th>
+            <th class="text-left py-3 px-4">Status</th>
+            <th class="text-left py-3 px-4">Created</th>
+            {% if user.role in ['Department Admin', 'Organization Admin', 'Support Staff', 'Super Admin'] %}
+            <th class="text-left py-3 px-4">Actions</th>
+            {% endif %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for complaint in complaints %}
+          <tr class="border-b hover:bg-gray-50">
+            <td class="py-3 px-4">#{{ complaint.id }}</td>
+            <td class="py-3 px-4">
+              <div class="font-medium">{{ complaint.title }}</div>
+              <div class="text-sm text-gray-600">{{ complaint.description[:50] }}...</div>
+            </td>
+            <td class="py-3 px-4">
+              <span class="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded">
+                {{ complaint.department }}
+              </span>
+            </td>
+            <td class="py-3 px-4">
+              {% if complaint.status == 'Pending' %}
+                <span class="px-2 py-1 text-xs bg-yellow-100 text-yellow-800 rounded">Pending</span>
+              {% elif complaint.status == 'In Progress' %}
+                <span class="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded">In Progress</span>
+              {% elif complaint.status == 'Resolved' %}
+                <span class="px-2 py-1 text-xs bg-green-100 text-green-800 rounded">Resolved</span>
+              {% else %}
+                <span class="px-2 py-1 text-xs bg-gray-100 text-gray-800 rounded">{{ complaint.status }}</span>
+              {% endif %}
+            </td>
+            <td class="py-3 px-4 text-sm">{{ complaint.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+            {% if user.role in ['Department Admin', 'Organization Admin', 'Support Staff', 'Super Admin'] %}
+            <td class="py-3 px-4">
+              <form action="/complaint/{{ complaint.id }}/update-status" method="post" class="inline">
+                <select name="status" onchange="this.form.submit()" 
+                        class="border rounded px-2 py-1 text-sm">
+                  <option value="Pending" {% if complaint.status == 'Pending' %}selected{% endif %}>Pending</option>
+                  <option value="In Progress" {% if complaint.status == 'In Progress' %}selected{% endif %}>In Progress</option>
+                  <option value="Resolved" {% if complaint.status == 'Resolved' %}selected{% endif %}>Resolved</option>
+                  <option value="Closed" {% if complaint.status == 'Closed' %}selected{% endif %}>Closed</option>
+                </select>
+              </form>
+            </td>
+            {% endif %}
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="text-center py-8 text-gray-500">
+      <p class="mb-4">No complaints found.</p>
+      {% if user.role == 'End User' %}
+        <a href="/complaint/register" class="px-6 py-3 bg-blue-700 text-white rounded hover:bg-blue-800">
+          Register Your First Complaint
+        </a>
+      {% endif %}
+    </div>
+  {% endif %}
+</div>
+
+{% if user.role == 'End User' %}
+<div class="mt-6">
+  <a href="/complaint/register" class="px-6 py-3 bg-blue-700 text-white rounded hover:bg-blue-800 inline-block">
+    + Register New Complaint
+  </a>
+</div>
+{% endif %}
+
+{% endblock %}

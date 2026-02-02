@@ -5,12 +5,25 @@
 Complaint Registration
 </h2>
 
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="mb-4 p-3 rounded max-w-xl {% if category == 'error' %}bg-red-100 text-red-700{% else %}bg-green-100 text-green-700{% endif %}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
 <div class="bg-white p-8 shadow rounded max-w-xl">
 
-<input class="w-full border p-3 mb-4 rounded"
-       placeholder="Complaint Title">
+<form action="/complaint/register" method="post">
 
-<select class="w-full border p-3 mb-4 rounded">
+<input name="title" class="w-full border p-3 mb-4 rounded"
+       placeholder="Complaint Title" required>
+
+<select name="department" class="w-full border p-3 mb-4 rounded" required>
+  <option value="" disabled selected>Select Department</option>
   <option>Education</option>
   <option>Residential Facilities</option>
   <option>Infrastructure</option>
@@ -26,13 +39,15 @@ Complaint Registration
   <option>General Complaint</option>
 </select>
 
-<textarea class="w-full border p-3 mb-6 rounded"
+<textarea name="description" class="w-full border p-3 mb-6 rounded"
           rows="4"
-          placeholder="Describe the issue in detail"></textarea>
+          placeholder="Describe the issue in detail" required></textarea>
 
-<button class="px-6 py-3 bg-blue-700 text-white rounded">
+<button type="submit" class="px-6 py-3 bg-blue-700 text-white rounded hover:bg-blue-800">
 Submit Complaint
 </button>
+
+</form>
 
 </div>
 

@@ -22,25 +22,35 @@
   </div>
 
  
-  <form action="/" method="get">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="mb-4 p-3 rounded {% if category == 'error' %}bg-red-100 text-red-700{% else %}bg-green-100 text-green-700{% endif %}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <form action="/register" method="post">
 
     <div class="mb-4">
       <label class="block text-sm font-medium mb-1">Full Name</label>
-      <input type="text" required
+      <input name="full_name" type="text" required
              class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600"
              placeholder="Enter your full name">
     </div>
 
     <div class="mb-4">
       <label class="block text-sm font-medium mb-1">Email Address</label>
-      <input type="email" required
+      <input name="email" type="email" required
              class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600"
              placeholder="Enter your email">
     </div>
 
     <div class="mb-4">
       <label class="block text-sm font-medium mb-1">Select Role</label>
-      <select required
+      <select name="role" id="role" required onchange="toggleDepartmentField()"
               class="w-full border rounded-lg px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-blue-600">
         <option disabled selected>Select your role</option>
         <option>End User</option>
@@ -50,16 +60,37 @@
       </select>
     </div>
 
+    <div class="mb-4" id="departmentField" style="display:none;">
+      <label class="block text-sm font-medium mb-1">Department (Required for Department Admin)</label>
+      <select name="department"
+              class="w-full border rounded-lg px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-blue-600">
+        <option value="">Select Department</option>
+        <option>Education</option>
+        <option>Residential Facilities</option>
+        <option>Infrastructure</option>
+        <option>Electricity</option>
+        <option>Water</option>
+        <option>IT Systems</option>
+        <option>Transport</option>
+        <option>Administration</option>
+        <option>Staff Behaviour</option>
+        <option>Security</option>
+        <option>Health</option>
+        <option>Finance</option>
+        <option>General Complaint</option>
+      </select>
+    </div>
+
     <div class="mb-4">
       <label class="block text-sm font-medium mb-1">Password</label>
-      <input type="password" required
+      <input name="password" type="password" required
              class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600"
              placeholder="Create a password">
     </div>
 
     <div class="mb-5">
       <label class="block text-sm font-medium mb-1">Confirm Password</label>
-      <input type="password" required
+      <input name="confirm_password" type="password" required
              class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600"
              placeholder="Confirm password">
     </div>
@@ -83,6 +114,18 @@
   </p>
 
 </div>
+
+<script>
+function toggleDepartmentField() {
+  const role = document.getElementById('role').value;
+  const deptField = document.getElementById('departmentField');
+  if (role === 'Department Admin') {
+    deptField.style.display = 'block';
+  } else {
+    deptField.style.display = 'none';
+  }
+}
+</script>
 
 </body>
 </html>

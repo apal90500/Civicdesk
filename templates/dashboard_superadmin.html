@@ -1,5 +1,43 @@
 {% extends "base.html" %}
 {% block content %}
-<h2 class="text-2xl font-semibold mb-4">Super Admin Panel</h2>
-<p>Platform control, organization onboarding, audit logs.</p>
+
+<div class="flex justify-between items-center mb-6">
+  <h2 class="text-2xl font-semibold">Super Admin Panel</h2>
+  <a href="/logout" class="text-sm text-red-600 hover:text-red-800">Logout</a>
+</div>
+
+<p class="mb-6 text-gray-600">Platform control, organization onboarding, audit logs.</p>
+
+<div class="grid grid-cols-2 gap-6 mb-8">
+  <div class="bg-white p-6 shadow rounded">
+    <div class="text-sm text-gray-600">Total Users</div>
+    <div class="text-3xl font-bold">{{ total_users }}</div>
+  </div>
+  <div class="bg-blue-100 p-6 shadow rounded">
+    <div class="text-sm text-gray-600">Total Complaints</div>
+    <div class="text-3xl font-bold">{{ total_complaints }}</div>
+  </div>
+</div>
+
+<div class="bg-white shadow rounded p-6">
+  <h3 class="text-xl font-semibold mb-4">User Role Distribution</h3>
+  {% if role_counts %}
+    <div class="grid grid-cols-2 gap-4">
+      {% for role, count in role_counts %}
+      <div class="border p-4 rounded">
+        <div class="font-medium">{{ role }}</div>
+        <div class="text-2xl font-bold text-blue-600">{{ count }}</div>
+      </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="text-gray-500">No users registered yet.</p>
+  {% endif %}
+  
+  <div class="mt-6">
+    <a href="/complaints" class="px-6 py-3 bg-blue-700 text-white rounded hover:bg-blue-800 inline-block">
+      View All Complaints
+    </a>
+  </div>
+</div>
 {% endblock %}

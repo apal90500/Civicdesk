@@ -17,13 +17,22 @@
     Login to CivicDesk
   </p>
 
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="mb-4 p-3 rounded {% if category == 'error' %}bg-red-100 text-red-700{% else %}bg-green-100 text-green-700{% endif %}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
   
-  <form action="/user/dashboard" method="get">
+  <form action="/login" method="post">
 
-    <input class="w-full border rounded-lg p-3 mb-4"
+    <input name="email" type="email" class="w-full border rounded-lg p-3 mb-4"
            placeholder="Email address" required>
 
-    <input class="w-full border rounded-lg p-3 mb-6"
+    <input name="password" class="w-full border rounded-lg p-3 mb-6"
            type="password" placeholder="Password" required>
 
     <button type="submit"

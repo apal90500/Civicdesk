@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2 class="text-2xl font-semibold mb-6">End User Panel</h2>
+
+<div class="grid grid-cols-3 gap-6">
+  <div class="bg-white p-6 shadow rounded">
+    Total Complaints<br><strong>12</strong>
+  </div>
+  <div class="bg-yellow-100 p-6 shadow rounded">
+    Pending<br><strong>4</strong>
+  </div>
+  <div class="bg-green-100 p-6 shadow rounded">
+    Resolved<br><strong>8</strong>
+  </div>
+</div>
+
+<a href="/complaint/register"
+   class="inline-block mt-6 px-6 py-3 bg-blue-700 text-white rounded">
+  Register New Complaint
+</a>
+
+{% endblock %}

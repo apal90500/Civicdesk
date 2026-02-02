@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CivicDesk | Create Account</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gradient-to-br from-indigo-700 via-blue-700 to-indigo-800
+             flex items-center justify-center min-h-screen">
+
+<div class="bg-white/95 backdrop-blur-xl p-8 rounded-2xl shadow-2xl w-[420px]">
+
+ 
+  <div class="text-center mb-6">
+    <h2 class="text-2xl font-semibold text-slate-800">
+      Create your CivicDesk account
+    </h2>
+    <p class="text-sm text-slate-500 mt-1">
+      Register once. Manage complaints anywhere.
+    </p>
+  </div>
+
+ 
+  <form action="/" method="get">
+
+    <div class="mb-4">
+      <label class="block text-sm font-medium mb-1">Full Name</label>
+      <input type="text" required
+             class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600"
+             placeholder="Enter your full name">
+    </div>
+
+    <div class="mb-4">
+      <label class="block text-sm font-medium mb-1">Email Address</label>
+      <input type="email" required
+             class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600"
+             placeholder="Enter your email">
+    </div>
+
+    <div class="mb-4">
+      <label class="block text-sm font-medium mb-1">Select Role</label>
+      <select required
+              class="w-full border rounded-lg px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-blue-600">
+        <option disabled selected>Select your role</option>
+        <option>End User</option>
+        <option>Organization Admin</option>
+        <option>Department Admin</option>
+        <option>Support Staff</option>
+      </select>
+    </div>
+
+    <div class="mb-4">
+      <label class="block text-sm font-medium mb-1">Password</label>
+      <input type="password" required
+             class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600"
+             placeholder="Create a password">
+    </div>
+
+    <div class="mb-5">
+      <label class="block text-sm font-medium mb-1">Confirm Password</label>
+      <input type="password" required
+             class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600"
+             placeholder="Confirm password">
+    </div>
+
+    
+    <button type="submit"
+            class="w-full py-3 rounded-lg text-white font-semibold
+                   bg-gradient-to-r from-green-600 to-emerald-600
+                   hover:opacity-90 transition">
+      Create Account
+    </button>
+
+  </form>
+
+  
+  <p class="text-center text-sm text-slate-600 mt-6">
+    Already have an account?
+    <a href="/" class="text-blue-700 font-medium hover:underline">
+      Login here
+    </a>
+  </p>
+
+</div>
+
+</body>
+</html>

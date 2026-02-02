@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>CivicDesk | Login</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gradient-to-br from-blue-700 to-indigo-800
+             flex items-center justify-center h-screen">
+
+<div class="bg-white/95 backdrop-blur p-8 rounded-2xl shadow-2xl w-[380px]">
+
+  <h2 class="text-2xl font-semibold mb-2 text-center">
+    Welcome Back
+  </h2>
+  <p class="text-sm text-gray-500 mb-6 text-center">
+    Login to CivicDesk
+  </p>
+
+  
+  <form action="/user/dashboard" method="get">
+
+    <input class="w-full border rounded-lg p-3 mb-4"
+           placeholder="Email address" required>
+
+    <input class="w-full border rounded-lg p-3 mb-6"
+           type="password" placeholder="Password" required>
+
+    <button type="submit"
+            class="w-full py-3 rounded-lg text-white font-medium
+                   bg-gradient-to-r from-blue-600 to-indigo-600
+                   hover:opacity-90 transition">
+      Login
+    </button>
+
+  </form>
+ 
+
+  <p class="text-center text-sm text-gray-600 mt-5">
+    Don’t have an account?
+    <a href="/register" class="text-blue-700 font-medium hover:underline">
+      Create one
+    </a>
+  </p>
+
+</div>
+
+</body>
+</html>

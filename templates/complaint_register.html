@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2 class="text-2xl font-semibold mb-6">
+Complaint Registration
+</h2>
+
+<div class="bg-white p-8 shadow rounded max-w-xl">
+
+<input class="w-full border p-3 mb-4 rounded"
+       placeholder="Complaint Title">
+
+<select class="w-full border p-3 mb-4 rounded">
+  <option>Education</option>
+  <option>Residential Facilities</option>
+  <option>Infrastructure</option>
+  <option>Electricity</option>
+  <option>Water</option>
+  <option>IT Systems</option>
+  <option>Transport</option>
+  <option>Administration</option>
+  <option>Staff Behaviour</option>
+  <option>Security</option>
+  <option>Health</option>
+  <option>Finance</option>
+  <option>General Complaint</option>
+</select>
+
+<textarea class="w-full border p-3 mb-6 rounded"
+          rows="4"
+          placeholder="Describe the issue in detail"></textarea>
+
+<button class="px-6 py-3 bg-blue-700 text-white rounded">
+Submit Complaint
+</button>
+
+</div>
+
+{% endblock %}

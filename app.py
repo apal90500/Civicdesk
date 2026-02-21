@@ -1,12 +1,17 @@
+import os
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
-import os
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'your-secret-key-change-in-production'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///civicdesk.db'
+
+
+
+BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+
+app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY", "change-this-secret")
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(BASE_DIR, 'civicdesk.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -17,269 +22,234 @@ class User(db.Model):
     full_name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
-    role = db.Column(db.String(50), nullable=False)  
-    department = db.Column(db.String(100))  
+    role = db.Column(db.String(50), nullable=False)
+    department = db.Column(db.String(100))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    complaints = db.relationship('Complaint', backref='user', lazy=True, foreign_keys='Complaint.user_id')
+
 
 class Complaint(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(200), nullable=False)
     description = db.Column(db.Text, nullable=False)
     department = db.Column(db.String(100), nullable=False)
-    status = db.Column(db.String(50), default='Pending')  
-    priority = db.Column(db.String(20), default='Normal')  
+    status = db.Column(db.String(50), default='Pending')
+    priority = db.Column(db.String(20), default='Normal')
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    assigned_to = db.Column(db.Integer, db.ForeignKey('user.id'))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow)
 
 with app.app_context():
     db.create_all()
 
 
+
 def login_required(f):
     from functools import wraps
     @wraps(f)
-    def decorated_function(*args, **kwargs):
+    def wrapper(*args, **kwargs):
         if 'user_id' not in session:
-            flash('Please login to access this page', 'error')
+            flash("Please login first", "error")
             return redirect(url_for('login'))
         return f(*args, **kwargs)
-    return decorated_function
+    return wrapper
 
 
 @app.route("/")
 def login():
     if 'user_id' in session:
-        user = User.query.get(session['user_id'])
-        return redirect_to_dashboard(user.role)
+        return redirect_to_dashboard(session['user_role'])
     return render_template("login.html")
 
-@app.route("/login", methods=['POST'])
+
+@app.route("/login", methods=["POST"])
 def login_post():
-    email = request.form.get('email')
-    password = request.form.get('password')
-    
+    email = request.form.get("email")
+    password = request.form.get("password")
+
     user = User.query.filter_by(email=email).first()
-    
+
     if user and check_password_hash(user.password, password):
         session['user_id'] = user.id
-        session['user_name'] = user.full_name
         session['user_role'] = user.role
         session['user_department'] = user.department
-        flash('Login successful!', 'success')
+        flash("Login successful", "success")
         return redirect_to_dashboard(user.role)
-    else:
-        flash('Invalid email or password', 'error')
-        return redirect(url_for('login'))
+
+    flash("Invalid credentials", "error")
+    return redirect(url_for("login"))
+
 
 @app.route("/logout")
 def logout():
     session.clear()
-    flash('You have been logged out', 'info')
-    return redirect(url_for('login'))
+    flash("Logged out successfully")
+    return redirect(url_for("login"))
+
 
 @app.route("/register")
 def register():
     return render_template("register.html")
 
-@app.route("/register", methods=['POST'])
+
+@app.route("/register", methods=["POST"])
 def register_post():
-    full_name = request.form.get('full_name')
-    email = request.form.get('email')
-    role = request.form.get('role')
-    department = request.form.get('department', None)
-    password = request.form.get('password')
-    confirm_password = request.form.get('confirm_password')
-    
+    full_name = request.form.get("full_name")
+    email = request.form.get("email")
+    role = request.form.get("role")
+    department = request.form.get("department")
+    password = request.form.get("password")
+    confirm_password = request.form.get("confirm_password")
+
     if password != confirm_password:
-        flash('Passwords do not match', 'error')
-        return redirect(url_for('register'))
-    
+        flash("Passwords do not match", "error")
+        return redirect(url_for("register"))
+
     if User.query.filter_by(email=email).first():
-        flash('Email already registered', 'error')
-        return redirect(url_for('register'))
-    
-    hashed_password = generate_password_hash(password)
+        flash("Email already exists", "error")
+        return redirect(url_for("register"))
+
+    hashed = generate_password_hash(password)
+
     new_user = User(
         full_name=full_name,
         email=email,
-        password=hashed_password,
+        password=hashed,
         role=role,
         department=department
     )
-    
+
     db.session.add(new_user)
     db.session.commit()
-    
-    flash('Registration successful! Please login.', 'success')
-    return redirect(url_for('login'))
+
+    flash("Registration successful")
+    return redirect(url_for("login"))
+
+
 
 def redirect_to_dashboard(role):
-    if role == 'End User':
-        return redirect(url_for('user_dashboard'))
-    elif role == 'Organization Admin':
-        return redirect(url_for('org_admin_dashboard'))
-    elif role == 'Department Admin':
-        return redirect(url_for('department_dashboard'))
-    elif role == 'Support Staff':
-        return redirect(url_for('support_dashboard'))
-    elif role == 'Super Admin':
-        return redirect(url_for('superadmin_dashboard'))
-    else:
-        return redirect(url_for('user_dashboard'))
+    routes = {
+        "End User": "user_dashboard",
+        "Organization Admin": "org_admin_dashboard",
+        "Department Admin": "department_dashboard",
+        "Support Staff": "support_dashboard",
+        "Super Admin": "superadmin_dashboard"
+    }
+    return redirect(url_for(routes.get(role, "user_dashboard")))
+
+
 
 @app.route("/user/dashboard")
 @login_required
 def user_dashboard():
-    user = User.query.get(session['user_id'])
-    user_complaints = Complaint.query.filter_by(user_id=user.id).all()
-    
-    total_complaints = len(user_complaints)
-    pending = len([c for c in user_complaints if c.status == 'Pending'])
-    resolved = len([c for c in user_complaints if c.status == 'Resolved'])
-    
-    return render_template("dashboard_user.html", 
-                         total=total_complaints, 
-                         pending=pending, 
-                         resolved=resolved,
-                         complaints=user_complaints)
+    complaints = Complaint.query.filter_by(user_id=session['user_id']).all()
+
+    total = len(complaints)
+    pending = len([c for c in complaints if c.status == "Pending"])
+    resolved = len([c for c in complaints if c.status == "Resolved"])
+
+    return render_template("dashboard_user.html",
+                           total=total,
+                           pending=pending,
+                           resolved=resolved,
+                           complaints=complaints)
+
+
 
 @app.route("/complaint/register")
 @login_required
 def complaint_register():
     return render_template("complaint_register.html")
 
-@app.route("/complaint/register", methods=['POST'])
+
+@app.route("/complaint/register", methods=["POST"])
 @login_required
 def complaint_register_post():
-    title = request.form.get('title')
-    department = request.form.get('department')
-    description = request.form.get('description')
-    
     new_complaint = Complaint(
-        title=title,
-        description=description,
-        department=department,
+        title=request.form.get("title"),
+        description=request.form.get("description"),
+        department=request.form.get("department"),
         user_id=session['user_id']
     )
-    
+
     db.session.add(new_complaint)
     db.session.commit()
-    
-    flash('Complaint registered successfully!', 'success')
-    return redirect(url_for('complaints'))
+
+    flash("Complaint registered successfully")
+    return redirect(url_for("complaints"))
+
 
 @app.route("/complaints")
 @login_required
 def complaints():
     user = User.query.get(session['user_id'])
-    
-    if user.role == 'End User':
---–==-=====       
---–==-=====        complaint_list = Complaint.query.filter_by(user_id=user.id).order_by(Complaint.created_at.desc()).all()
---–==-=====    elif user.role == 'Department Admin':
---–==-=====       --–==-=====
---–==-=====        complaint_list = Complaint.query.filter_by--–==-=====(department=user.department).order_by(Complaint.created_at.desc()).all()
---–==-=====    elif user.role in ['Organization Admin', 'Supp--–==-=====ort Staff', 'Super Admin']:
---–==-=====        --–==-=====
---–==-=====        complaint_list = Complaint.query.order_by(--–==-=====Complaint.created_at.desc()).all()
---–==-=====    else:--–==-=====
---–==-=====        complaint_list = []--–==-=====
---–==-=====    --–==-=====
---–==-=====    return render_template("complaint_list.html", --–==-=====complaints=complaint_list, user=user)
---–==-=====
---–==-=====@app.route("/complaint/<int:complaint_id>/update-s--–==-=====tatus", methods=['POST'])
---–==-=====@login_required--–==-=====
---–==-=====def update_complaint_status(complaint_id):--–==-=====
---–==-=====    complaint = Complaint.query.get_or_404(complai--–==-=====nt_id)
---–==-=====    new_status = request.form.get('status')--–==-=====
---–==-=====    --–==-=====
---–==-=====    user = User.query.get(session['user_id'])--–==-=====
---–==-=====    --–==-=====
---–==-=====    --–==-=====
---–==-=====    if user.role in ['Department Admin', 'Organiza--–==-=====tion Admin', 'Support Staff', 'Super Admin']:
---–==-=====        complaint.status = new_status--–==-=====
---–==-=====        complaint.updated_at = datetime.utcnow()--–==-=====
---–==-=====        db.session.commit()--–==-=====
---–==-=====        flash('Complaint status updated!', 'succes--–==-=====s')
---–==-=====    else:--–==-=====
---–==-=====        flash('You do not have permission to updat--–==-=====e complaint status', 'error')
---–==-=====    --–==-=====
---–==-=====    return redirect(url_for('complaints'))--–==-=====
---–==-=====
---–==-=====@app.route("/org-admin/dashboard")--–==-=====
---–==-=====@login_required--–==-=====
---–==-=====def org_admin_dashboard():--–==-=====
---–==-=====    total_complaints = Complaint.query.count()--–==-=====
---–==-=====    pending = Complaint.query.filter_by(status='Pe--–==-=====nding').count()
---–==-=====    in_progress = Complaint.query.filter_by(status--–==-======'In Progress').count()
---–==-=====    resolved = Complaint.query.filter_by(status='R--–==-=====esolved').count()
---–==-=====    --–==-=====
---–==-=====    --–==-=====
---–==-=====    departments = db.session.query(Complaint.depar--–==-=====tment, db.func.count(Complaint.id)).group_by(Complaint.department).all()
---–==-=====    --–==-=====
---–==-=====    return render_template("dashboard_org_admin.ht--–==-=====ml",
---–==-=====                         total=total_complaints,--–==-=====
---–==-=====                         pending=pending,--–==-=====
---–==-=====                         in_progress=in_progress,--–==-=====
---–==-=====                         resolved=resolved,--–==-=====
---–==-=====                         departments=departments)--–==-=====
---–==-=====
---–==-=====@app.route("/department/dashboard")--–==-=====
---–==-=====@login_required--–==-=====
---–==-=====def department_dashboard():--–==-=====
---–==-=====    user = User.query.get(session['user_id'])--–==-=====
---–==-=====    --–==-=====
---–==-=====    if not user.department:--–==-=====
---–==-=====        flash('No department assigned to your acco--–==-=====unt', 'error')
---–==-=====        return redirect(url_for('login'))--–==-=====
---–==-=====    --–==-=====
---–==-=====    dept_complaints = Complaint.query.filter_by(de--–==-=====partment=user.department).all()
---–==-=====    --–==-=====
---–==-=====    total = len(dept_complaints)--–==-=====
---–==-=====    pending = len([c for c in dept_complaints if c--–==-=====.status == 'Pending'])
---–==-=====    in_progress = len([c for c in dept_complaints --–==-=====if c.status == 'In Progress'])
---–==-=====    resolved = len([c for c in dept_complaints if --–==-=====c.status == 'Resolved'])
---–==-=====    --–==-=====
---–==-=====    return render_template("dashboard_department.h--–==-=====tml",
---–==-=====                         department=user.departmen--–==-=====t,
---–==-=====                         total=total,--–==-=====
---–==-=====                         pending=pending,--–==-=====
---–==-=====                         in_progress=in_progress,--–==-=====
---–==-=====                         resolved=resolved,--–==-=====
---–==-=====                         complaints=dept_complaint--–==-=====s)
---–==-=====
---–==-=====@app.route("/support/dashboard")--–==-=====
---–==-=====@login_required--–==-=====
---–==-=====def support_dashboard():--–==-=====
---–==-=====    recent_complaints = Complaint.query.order_by(C--–==-=====omplaint.created_at.desc()).limit(10).all()
---–==-=====    return render_template("dashboard_support.html--–==-=====", complaints=recent_complaints)
---–==-=====
---–==-=====@app.route("/super-admin/dashboard")--–==-=====
---–==-=====@login_required--–==-=====
---–==-=====def superadmin_dashboard():--–==-=====
---–==-=====    total_users = User.query.count()--–==-=====
---–==-=====    total_complaints = Complaint.query.count()--–==-=====
---–==-=====    --–==-=====
---–==-=====    --–==-=====
---–==-=====    role_counts = db.session.query(User.role, db.f--–==-=====unc.count(User.id)).group_by(User.role).all()
---–==-=====    --–==-=====
---–==-=====    return render_template("dashboard_superadmin.h--–==-=====tml",
---–==-=====                         total_users=total_users,--–==-=====
---–==-=====                         total_complaints=total_co--–==-=====mplaints,
---–==-=====                         role_counts=role_counts)--–==-=====
---–==-=====
---–==-=====@app.route("/payments")--–==-=====
---–==-=====@login_required--–==-=====
---–==-=====def payments():--–==-=====
---–==-=====    return render_template("payments.html")--–==-=====
---–==-=====
---–==-=====@app.route("/analytics")--–==-=====
---–==-=====@login_required--–==-=====
---–==-=====
-def analytics():--–==-=====
-    return render_template("analytics.html")--–==-=====
-    app.run(host="0.0.0.0", port=5000, debug=True)--–==-=====
+
+    if user.role == "End User":
+        complaint_list = Complaint.query.filter_by(user_id=user.id).all()
+
+    elif user.role == "Department Admin":
+        complaint_list = Complaint.query.filter_by(department=user.department).all()
+
+    else:
+        complaint_list = Complaint.query.all()
+
+    return render_template("complaint_list.html",
+                           complaints=complaint_list,
+                           user=user)
+
+
+@app.route("/complaint/<int:id>/update-status", methods=["POST"])
+@login_required
+def update_status(id):
+    complaint = Complaint.query.get_or_404(id)
+    complaint.status = request.form.get("status")
+    complaint.updated_at = datetime.utcnow()
+
+    db.session.commit()
+    flash("Status updated")
+    return redirect(url_for("complaints"))
+
+
+@app.route("/org-admin/dashboard")
+@login_required
+def org_admin_dashboard():
+    total = Complaint.query.count()
+    return render_template("dashboard_org_admin.html", total=total)
+
+
+@app.route("/department/dashboard")
+@login_required
+def department_dashboard():
+    return render_template("dashboard_department.html")
+
+
+@app.route("/support/dashboard")
+@login_required
+def support_dashboard():
+    complaints = Complaint.query.order_by(Complaint.created_at.desc()).limit(10)
+    return render_template("dashboard_support.html", complaints=complaints)
+
+
+@app.route("/super-admin/dashboard")
+@login_required
+def superadmin_dashboard():
+    users = User.query.count()
+    complaints = Complaint.query.count()
+    return render_template("dashboard_superadmin.html",
+                           total_users=users,
+                           total_complaints=complaints)
+
+
+@app.route("/payments")
+@login_required
+def payments():
+    return render_template("payments.html")
+
+
+@app.route("/analytics")
+@login_required
+def analytics():
+    return render_template("analytics.html")
+
+
 if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000, debug=True)

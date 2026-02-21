@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6 sm:mb-8">
+  <div>
+    <h2 class="text-xl sm:text-2xl font-semibold text-slate-800">
+      Super Admin Panel
+    </h2>
+    <p class="text-sm text-slate-500">
+      Platform control, organization onboarding, and audit overview
+    </p>
+  </div>
+
+  <a href="/logout"
+     class="self-start sm:self-auto text-sm px-4 py-2 rounded-lg
+            border border-red-200 text-red-600
+            hover:bg-red-50 transition">
+    Logout
+  </a>
+</div>
+
+
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-8">
+
+  <div class="bg-white p-5 rounded-xl shadow-sm border">
+    <p class="text-xs uppercase tracking-wide text-gray-500">
+      Total Users
+    </p>
+    <p class="text-3xl font-bold text-slate-800 mt-1">
+      {{ total_users }}
+    </p>
+  </div>
+
+  <div class="bg-blue-50 p-5 rounded-xl shadow-sm border border-blue-100">
+    <p class="text-xs uppercase tracking-wide text-blue-700">
+      Total Complaints
+    </p>
+    <p class="text-3xl font-bold text-blue-800 mt-1">
+      {{ total_complaints }}
+    </p>
+  </div>
+
+</div>
+
+
+<div class="bg-white rounded-xl shadow-sm border p-5 sm:p-6">
+
+  <h3 class="text-base sm:text-lg font-semibold text-slate-800 mb-4">
+    User Role Distribution
+  </h3>
+
+  {% if role_counts %}
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      {% for role, count in role_counts %}
+      <div class="p-4 rounded-xl border bg-slate-50 hover:shadow transition">
+
+        <p class="text-xs uppercase tracking-wide text-slate-500">
+          Role
+        </p>
+        <p class="text-base font-medium text-slate-800 mt-1">
+          {{ role }}
+        </p>
+
+        <p class="text-2xl font-bold text-blue-700 mt-3">
+          {{ count }}
+        </p>
+
+      </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="text-center py-8">
+      <p class="text-slate-500">
+        No users registered yet.
+      </p>
+    </div>
+  {% endif %}
+
+  
+  <div class="mt-6 sm:mt-8 text-left sm:text-right">
+    <a href="/complaints"
+       class="inline-flex w-full sm:w-auto justify-center items-center gap-2
+              px-6 py-4 sm:py-3
+              bg-blue-700 text-white rounded-xl
+              hover:bg-blue-800 transition">
+      View All Complaints →
+    </a>
+  </div>
+
+</div>
+
+{% endblock %}

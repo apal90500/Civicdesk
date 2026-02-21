@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+{% block content %}
+
+
+<div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6 sm:mb-8">
+  <div>
+    <h2 class="text-xl sm:text-2xl font-semibold text-slate-800">
+      {{ department }} Department
+    </h2>
+    <p class="text-sm text-slate-500">
+      Manage and track complaints assigned to your department
+    </p>
+  </div>
+
+  <a href="/logout"
+     class="self-start sm:self-auto text-sm px-4 py-2 rounded-lg
+            border border-red-200 text-red-600
+            hover:bg-red-50 transition">
+    Logout
+  </a>
+</div>
+
+
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8 sm:mb-10">
+
+  <div class="bg-white p-5 rounded-xl shadow-sm border">
+    <p class="text-xs uppercase tracking-wide text-gray-500">
+      Total Complaints
+    </p>
+    <p class="text-3xl font-bold text-slate-800 mt-1">
+      {{ total }}
+    </p>
+  </div>
+
+  <div class="bg-yellow-50 p-5 rounded-xl shadow-sm border border-yellow-100">
+    <p class="text-xs uppercase tracking-wide text-yellow-700">
+      Pending
+    </p>
+    <p class="text-3xl font-bold text-yellow-800 mt-1">
+      {{ pending }}
+    </p>
+  </div>
+
+  <div class="bg-blue-50 p-5 rounded-xl shadow-sm border border-blue-100">
+    <p class="text-xs uppercase tracking-wide text-blue-700">
+      In Progress
+    </p>
+    <p class="text-3xl font-bold text-blue-800 mt-1">
+      {{ in_progress }}
+    </p>
+  </div>
+
+  <div class="bg-green-50 p-5 rounded-xl shadow-sm border border-green-100">
+    <p class="text-xs uppercase tracking-wide text-green-700">
+      Resolved
+    </p>
+    <p class="text-3xl font-bold text-green-800 mt-1">
+      {{ resolved }}
+    </p>
+  </div>
+
+</div>
+
+
+<div class="bg-white rounded-xl shadow-sm border p-5 sm:p-6">
+  <div class="flex justify-between items-center mb-4 sm:mb-5">
+    <h3 class="text-base sm:text-lg font-semibold text-slate-800">
+      Recent Complaints
+    </h3>
+
+    <a href="/complaints"
+       class="text-sm text-blue-700 hover:underline">
+      View All →
+    </a>
+  </div>
+
+  {% if complaints %}
+    <div class="divide-y">
+      {% for complaint in complaints[:5] %}
+      <div class="py-4 flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3 sm:gap-4">
+
+        <div>
+          <p class="font-medium text-slate-800 text-sm sm:text-base">
+            #{{ complaint.id }} — {{ complaint.title }}
+          </p>
+
+          <p class="text-sm text-slate-600 mt-1">
+            {{ complaint.description[:120] }}{% if complaint.description|length > 120 %}...{% endif %}
+          </p>
+
+          <p class="text-xs text-slate-400 mt-2">
+            Submitted on {{ complaint.created_at.strftime('%d %b %Y, %I:%M %p') }}
+          </p>
+        </div>
+
+       
+        <div class="shrink-0">
+          {% if complaint.status == 'Pending' %}
+            <span class="inline-block px-3 py-1 text-xs font-medium
+                         bg-yellow-100 text-yellow-800 rounded-full">
+              Pending
+            </span>
+          {% elif complaint.status == 'In Progress' %}
+            <span class="inline-block px-3 py-1 text-xs font-medium
+                         bg-blue-100 text-blue-800 rounded-full">
+              In Progress
+            </span>
+          {% elif complaint.status == 'Resolved' %}
+            <span class="inline-block px-3 py-1 text-xs font-medium
+                         bg-green-100 text-green-800 rounded-full">
+              Resolved
+            </span>
+          {% endif %}
+        </div>
+
+      </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="text-center py-8">
+      <p class="text-slate-500">
+        No complaints assigned to this department yet.
+      </p>
+    </div>
+  {% endif %}
+</div>
+
+{% endblock %}

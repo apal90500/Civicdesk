@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CivicDesk | Create Account</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="min-h-screen bg-gradient-to-br from-indigo-700 via-blue-700 to-indigo-800
+             flex items-center justify-center px-4 py-6">
+
+<div class="bg-white/95 backdrop-blur-xl
+            p-6 sm:p-8
+            rounded-2xl shadow-2xl
+            w-full max-w-md">
+
+  
+  <div class="text-center mb-6">
+    <h2 class="text-2xl sm:text-3xl font-semibold text-slate-800">
+      Create your account
+    </h2>
+    <p class="text-sm text-slate-500 mt-1">
+      Register once. Manage complaints anywhere.
+    </p>
+  </div>
+
+  
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="mb-4 p-3 rounded-lg text-sm
+        {% if category == 'error' %}
+          bg-red-100 text-red-700
+        {% else %}
+          bg-green-100 text-green-700
+        {% endif %}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+ 
+  <form action="/register" method="post" class="space-y-4">
+
+    <input name="full_name" type="text" required
+           class="w-full border rounded-lg px-4 py-3 text-sm
+                  focus:outline-none focus:ring-2 focus:ring-blue-600"
+           placeholder="Full Name" />
+
+    <input name="email" type="email" required
+           class="w-full border rounded-lg px-4 py-3 text-sm
+                  focus:outline-none focus:ring-2 focus:ring-blue-600"
+           placeholder="Email Address" />
+
+    <select name="role" id="role" required onchange="toggleDepartmentField()"
+            class="w-full border rounded-lg px-4 py-3 text-sm bg-white
+                   focus:outline-none focus:ring-2 focus:ring-blue-600">
+      <option disabled selected>Select Role</option>
+      <option>End User</option>
+      <option>Organization Admin</option>
+      <option>Department Admin</option>
+      <option>Support Staff</option>
+    </select>
+
+    <div id="departmentField" class="hidden">
+      <select name="department"
+              class="w-full border rounded-lg px-4 py-3 text-sm bg-white
+                     focus:outline-none focus:ring-2 focus:ring-blue-600">
+        <option value="">Select Department</option>
+        <option>Education</option>
+        <option>Residential Facilities</option>
+        <option>Infrastructure</option>
+        <option>Electricity</option>
+        <option>Water</option>
+        <option>IT Systems</option>
+        <option>Transport</option>
+        <option>Administration</option>
+        <option>Staff Behaviour</option>
+        <option>Security</option>
+        <option>Health</option>
+        <option>Finance</option>
+        <option>General Complaint</option>
+      </select>
+    </div>
+
+    
+    <div class="relative">
+      <input id="password" name="password" type="password" required
+             class="w-full border rounded-lg px-4 py-3 pr-10 text-sm
+                    focus:outline-none focus:ring-2 focus:ring-blue-600"
+             placeholder="Create Password" />
+      <button type="button" onclick="togglePassword('password')"
+              class="absolute right-3 top-3 text-gray-500 text-sm">
+        👁
+      </button>
+    </div>
+
+    <div class="relative">
+      <input id="confirm_password" name="confirm_password" type="password" required
+             class="w-full border rounded-lg px-4 py-3 pr-10 text-sm
+                    focus:outline-none focus:ring-2 focus:ring-blue-600"
+             placeholder="Confirm Password" />
+      <button type="button" onclick="togglePassword('confirm_password')"
+              class="absolute right-3 top-3 text-gray-500 text-sm">
+        👁
+      </button>
+    </div>
+
+    <button type="submit"
+            class="w-full py-3 rounded-lg text-white font-semibold
+                   bg-gradient-to-r from-green-600 to-emerald-600
+                   hover:opacity-90 active:scale-[0.98] transition">
+      Create Account
+    </button>
+
+  </form>
+
+  
+  <p class="text-center text-sm text-slate-600 mt-6">
+    Already have an account?
+    <a href="/" class="text-blue-700 font-medium hover:underline">
+      Login here
+    </a>
+  </p>
+
+</div>
+
+<script>
+function toggleDepartmentField() {
+  const role = document.getElementById('role').value;
+  const dept = document.getElementById('departmentField');
+  dept.classList.toggle('hidden', role !== 'Department Admin');
+}
+
+function togglePassword(id) {
+  const input = document.getElementById(id);
+  input.type = input.type === 'password' ? 'text' : 'password';
+}
+</script>
+
+</body>
+</html>

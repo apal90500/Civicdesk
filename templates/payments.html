@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="mb-6 sm:mb-8">
+  <h2 class="text-xl sm:text-2xl font-semibold text-slate-800">
+    Payments
+  </h2>
+  <p class="text-sm text-slate-500 mt-1">
+    Choose complaint type and complete payment securely
+  </p>
+</div>
+
+<div class="bg-white rounded-2xl shadow-md border p-5 sm:p-6 max-w-xl">
+
+  
+  <h3 class="text-sm font-semibold text-slate-700 mb-3">
+    Select Complaint Type
+  </h3>
+
+  <div class="space-y-3 mb-6">
+
+    <label class="flex items-center justify-between p-4 rounded-xl border cursor-pointer
+                  hover:border-blue-500 hover:bg-blue-50 transition">
+      <div>
+        <p class="text-sm font-medium text-slate-800">
+          Simple Complaint
+        </p>
+        <p class="text-xs text-slate-500">
+          Standard processing · Normal resolution time
+        </p>
+      </div>
+      <div class="text-right">
+        <p class="text-lg font-bold text-green-600">₹30</p>
+        <input type="radio" name="complaint_type" value="simple" class="accent-blue-600 mt-1">
+      </div>
+    </label>
+
+    
+    <label class="flex items-center justify-between p-4 rounded-xl border cursor-pointer
+                  hover:border-blue-500 hover:bg-blue-50 transition">
+      <div>
+        <p class="text-sm font-medium text-slate-800">
+          Priority Complaint
+        </p>
+        <p class="text-xs text-slate-500">
+          Faster resolution · High priority handling
+        </p>
+      </div>
+      <div class="text-right">
+        <p class="text-lg font-bold text-green-600">₹75</p>
+        <input type="radio" name="complaint_type" value="priority" class="accent-blue-600 mt-1">
+      </div>
+    </label>
+
+  </div>
+
+  
+  <h3 class="text-sm font-semibold text-slate-700 mb-3">
+    Select Payment Method
+  </h3>
+
+  <div class="space-y-3 mb-6">
+
+    <label class="flex items-center justify-between p-4 rounded-xl border cursor-pointer hover:bg-slate-50">
+      <div>
+        <p class="text-sm font-medium">UPI</p>
+        <p class="text-xs text-slate-500">GPay · PhonePe · Paytm · BHIM</p>
+      </div>
+      <input type="radio" name="payment_method" class="accent-blue-600">
+    </label>
+
+    <label class="flex items-center justify-between p-4 rounded-xl border cursor-pointer hover:bg-slate-50">
+      <div>
+        <p class="text-sm font-medium">Debit / Credit Card</p>
+        <p class="text-xs text-slate-500">Visa · RuPay · Mastercard</p>
+      </div>
+      <input type="radio" name="payment_method" class="accent-blue-600">
+    </label>
+
+    <label class="flex items-center justify-between p-4 rounded-xl border cursor-pointer hover:bg-slate-50">
+      <div>
+        <p class="text-sm font-medium">Net Banking</p>
+        <p class="text-xs text-slate-500">SBI · HDFC · ICICI · Axis</p>
+      </div>
+      <input type="radio" name="payment_method" class="accent-blue-600">
+    </label>
+
+    <label class="flex items-center justify-between p-4 rounded-xl border cursor-pointer hover:bg-slate-50">
+      <div>
+        <p class="text-sm font-medium">Wallet</p>
+        <p class="text-xs text-slate-500">Paytm · PhonePe Wallet</p>
+      </div>
+      <input type="radio" name="payment_method" class="accent-blue-600">
+    </label>
+
+  </div>
+
+ 
+  <button
+    class="w-full py-4 rounded-xl text-white text-base font-semibold
+           bg-gradient-to-r from-green-600 to-emerald-600
+           hover:opacity-95 active:scale-[0.98] transition">
+    Proceed to Pay
+  </button>
+
+  <p class="text-xs text-slate-500 text-center mt-4">
+    Secure payments · RBI compliant · Indian payment gateways
+  </p>
+
+</div>
+
+{% endblock %}

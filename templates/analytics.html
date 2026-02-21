@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% block content %}
+
+
+<div class="mb-6 sm:mb-8">
+  <h2 class="text-xl sm:text-2xl font-semibold text-slate-800">
+    Analytics & Reports
+  </h2>
+  <p class="text-sm text-slate-500 mt-1">
+    Insightful analytics to monitor performance, trends, and efficiency
+  </p>
+</div>
+
+
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8 sm:mb-10">
+
+  <div class="bg-white p-5 sm:p-6 rounded-xl shadow-sm border">
+    <p class="text-xs uppercase tracking-wide text-slate-500">
+      Complaint Trends
+    </p>
+    <p class="text-base sm:text-lg font-medium text-slate-800 mt-2">
+      Daily & Monthly growth patterns
+    </p>
+  </div>
+
+  <div class="bg-white p-5 sm:p-6 rounded-xl shadow-sm border">
+    <p class="text-xs uppercase tracking-wide text-slate-500">
+      Department Performance
+    </p>
+    <p class="text-base sm:text-lg font-medium text-slate-800 mt-2">
+      Resolution efficiency by department
+    </p>
+  </div>
+
+  <div class="bg-white p-5 sm:p-6 rounded-xl shadow-sm border">
+    <p class="text-xs uppercase tracking-wide text-slate-500">
+      Resolution Time
+    </p>
+    <p class="text-base sm:text-lg font-medium text-slate-800 mt-2">
+      Average time to close complaints
+    </p>
+  </div>
+
+  <div class="bg-white p-5 sm:p-6 rounded-xl shadow-sm border">
+    <p class="text-xs uppercase tracking-wide text-slate-500">
+      Financial Summary
+    </p>
+    <p class="text-base sm:text-lg font-medium text-slate-800 mt-2">
+      Revenue from premium & priority services
+    </p>
+  </div>
+
+</div>
+
+
+<div class="bg-white rounded-xl shadow-sm border p-5 sm:p-6">
+  <h3 class="text-lg sm:text-xl font-semibold text-slate-800 mb-4">
+    Available Reports
+  </h3>
+
+  <div class="space-y-3 sm:space-y-4">
+
+    <a href="#"
+       class="flex justify-between items-center border-b pb-3
+              hover:bg-slate-50 rounded-lg px-2 py-2 transition">
+      <span class="text-slate-700 text-sm sm:text-base">
+        📊 Complaint Trend Report
+      </span>
+      <span class="text-blue-700 text-sm font-medium">
+        View →
+      </span>
+    </a>
+
+    <a href="#"
+       class="flex justify-between items-center border-b pb-3
+              hover:bg-slate-50 rounded-lg px-2 py-2 transition">
+      <span class="text-slate-700 text-sm sm:text-base">
+        🏢 Department Performance Report
+      </span>
+      <span class="text-blue-700 text-sm font-medium">
+        View →
+      </span>
+    </a>
+
+    <a href="#"
+       class="flex justify-between items-center border-b pb-3
+              hover:bg-slate-50 rounded-lg px-2 py-2 transition">
+      <span class="text-slate-700 text-sm sm:text-base">
+        ⏱ Resolution Time Analysis
+      </span>
+      <span class="text-blue-700 text-sm font-medium">
+        View →
+      </span>
+    </a>
+
+    <a href="#"
+       class="flex justify-between items-center
+              hover:bg-slate-50 rounded-lg px-2 py-2 transition">
+      <span class="text-slate-700 text-sm sm:text-base">
+        💰 Financial & Payment Summary
+      </span>
+      <span class="text-blue-700 text-sm font-medium">
+        View →
+      </span>
+    </a>
+
+  </div>
+</div>
+
+{% endblock %}

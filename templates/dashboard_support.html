@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% block content %}
+
+
+<div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6 sm:mb-8">
+  <div>
+    <h2 class="text-xl sm:text-2xl font-semibold text-slate-800">
+      Support Panel
+    </h2>
+    <p class="text-sm text-slate-500">
+      Assist users, clarify issues, and escalate complaints
+    </p>
+  </div>
+
+  <a href="/logout"
+     class="self-start sm:self-auto text-sm px-4 py-2 rounded-lg
+            border border-red-200 text-red-600
+            hover:bg-red-50 transition">
+    Logout
+  </a>
+</div>
+
+
+<div class="bg-white shadow-sm rounded-xl border p-5 sm:p-6">
+
+  <h3 class="text-base sm:text-lg font-semibold text-slate-800 mb-4">
+    Recent Complaints
+  </h3>
+
+  {% if complaints %}
+    <div class="space-y-4">
+      {% for complaint in complaints %}
+      <div class="border rounded-xl p-4 hover:shadow transition">
+
+        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3">
+
+        
+          <div>
+            <p class="font-medium text-slate-800 text-sm sm:text-base">
+              #{{ complaint.id }} — {{ complaint.title }}
+            </p>
+
+            <p class="text-sm text-slate-600 mt-1">
+              {{ complaint.description[:100] }}{% if complaint.description|length > 100 %}...{% endif %}
+            </p>
+
+            <div class="text-xs text-slate-500 mt-2 flex flex-wrap gap-2">
+              <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded-full">
+                {{ complaint.department }}
+              </span>
+              <span>
+                {{ complaint.created_at.strftime('%Y-%m-%d %H:%M') }}
+              </span>
+            </div>
+          </div>
+
+          <div class="shrink-0">
+            {% if complaint.status == 'Pending' %}
+              <span class="inline-block px-3 py-1 text-xs font-medium
+                           bg-yellow-100 text-yellow-800 rounded-full">
+                Pending
+              </span>
+            {% elif complaint.status == 'In Progress' %}
+              <span class="inline-block px-3 py-1 text-xs font-medium
+                           bg-blue-100 text-blue-800 rounded-full">
+                In Progress
+              </span>
+            {% elif complaint.status == 'Resolved' %}
+              <span class="inline-block px-3 py-1 text-xs font-medium
+                           bg-green-100 text-green-800 rounded-full">
+                Resolved
+              </span>
+            {% endif %}
+          </div>
+
+        </div>
+
+      </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="text-center py-8">
+      <p class="text-slate-500">
+        No recent complaints.
+      </p>
+    </div>
+  {% endif %}
+
+  <div class="mt-6 sm:mt-8 text-left sm:text-right">
+    <a href="/complaints"
+       class="inline-flex w-full sm:w-auto justify-center items-center gap-2
+              px-6 py-4 sm:py-3
+              bg-blue-700 text-white rounded-xl
+              hover:bg-blue-800 transition">
+      View All Complaints →
+    </a>
+  </div>
+
+</div>
+
+{% endblock %}

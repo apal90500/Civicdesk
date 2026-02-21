@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block content %}
+
+
+<div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
+
+  <div>
+    <h2 class="text-xl sm:text-2xl font-semibold text-slate-800">
+      User Dashboard
+    </h2>
+    <p class="text-sm text-slate-500">
+      Track, manage, and monitor your complaints
+    </p>
+  </div>
+
+  <a href="/logout"
+     class="self-start sm:self-auto text-sm text-red-600 hover:text-red-800">
+    Logout
+  </a>
+
+</div>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="mb-6 p-4 rounded-lg border text-sm
+        {% if category == 'error' %}
+          bg-red-50 text-red-700 border-red-200
+        {% else %}
+          bg-green-50 text-green-700 border-green-200
+        {% endif %}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-10">
+
+  <div class="bg-white p-5 rounded-xl shadow-sm border">
+    <p class="text-xs text-slate-500 uppercase tracking-wide">
+      Total Complaints
+    </p>
+    <p class="text-3xl font-bold text-slate-800 mt-2">
+      {{ total }}
+    </p>
+  </div>
+
+  <div class="bg-yellow-50 p-5 rounded-xl shadow-sm border border-yellow-200">
+    <p class="text-xs text-yellow-700 uppercase tracking-wide">
+      Pending
+    </p>
+    <p class="text-3xl font-bold text-yellow-800 mt-2">
+      {{ pending }}
+    </p>
+  </div>
+
+  <div class="bg-green-50 p-5 rounded-xl shadow-sm border border-green-200">
+    <p class="text-xs text-green-700 uppercase tracking-wide">
+      Resolved
+    </p>
+    <p class="text-3xl font-bold text-green-800 mt-2">
+      {{ resolved }}
+    </p>
+  </div>
+
+</div>
+
+
+<div class="bg-white rounded-xl shadow-sm border p-5 sm:p-6">
+  <h3 class="text-lg sm:text-xl font-semibold text-slate-800 mb-4">
+    Quick Actions
+  </h3>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+    <a href="/complaint/register"
+       class="flex items-center justify-center gap-2 px-5 py-4
+              bg-blue-700 text-white rounded-xl
+              hover:bg-blue-800 active:scale-[0.98] transition">
+      ➕ Register Complaint
+    </a>
+
+    <a href="/complaints"
+       class="flex items-center justify-center gap-2 px-5 py-4
+              bg-slate-700 text-white rounded-xl
+              hover:bg-slate-800 active:scale-[0.98] transition">
+      📄 My Complaints
+    </a>
+
+  </div>
+</div>
+
+{% endblock %}

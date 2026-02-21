@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block content %}
+
+
+<div class="mb-6 sm:mb-8">
+  <h2 class="text-xl sm:text-2xl font-semibold text-slate-800">
+    Complaint Registration
+  </h2>
+  <p class="text-sm text-slate-500 mt-1">
+    Submit your complaint and track its resolution
+  </p>
+</div>
+
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="mb-4 p-3 rounded-lg text-sm
+        {% if category == 'error' %}
+          bg-red-100 text-red-700
+        {% else %}
+          bg-green-100 text-green-700
+        {% endif %}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+<div class="bg-white p-5 sm:p-8 shadow-sm rounded-xl
+            w-full max-w-xl">
+
+<form action="/complaint/register" method="post" class="space-y-4">
+
+
+  <input name="title" required
+         class="w-full border rounded-lg px-4 py-3 text-sm
+                focus:outline-none focus:ring-2 focus:ring-blue-600"
+         placeholder="Complaint Title" />
+
+  
+  <select name="department" required
+          class="w-full border rounded-lg px-4 py-3 text-sm bg-white
+                 focus:outline-none focus:ring-2 focus:ring-blue-600">
+    <option value="" disabled selected>Select Department</option>
+    <option>Education</option>
+    <option>Residential Facilities</option>
+    <option>Infrastructure</option>
+    <option>Electricity</option>
+    <option>Water</option>
+    <option>IT Systems</option>
+    <option>Transport</option>
+    <option>Administration</option>
+    <option>Staff Behaviour</option>
+    <option>Security</option>
+    <option>Health</option>
+    <option>Finance</option>
+    <option>General Complaint</option>
+  </select>
+
+ 
+  <textarea name="description" rows="4" required
+            class="w-full border rounded-lg px-4 py-3 text-sm resize-none
+                   focus:outline-none focus:ring-2 focus:ring-blue-600"
+            placeholder="Describe the issue in detail"></textarea>
+
+  
+  <button type="submit"
+          class="w-full sm:w-auto px-6 py-4
+                 bg-blue-700 text-white rounded-xl
+                 hover:bg-blue-800 active:scale-[0.98] transition">
+    Submit Complaint
+  </button>
+
+</form>
+
+</div>
+
+{% endblock %}

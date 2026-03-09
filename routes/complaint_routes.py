@@ -37,7 +37,7 @@ def register_complaint():
         description = request.form.get("description")
         department = request.form.get("department")
 
-        # Ticket Generate
+        
         ticket = "CD-" + str(random.randint(100000,999999))
 
         complaint = Complaint(
